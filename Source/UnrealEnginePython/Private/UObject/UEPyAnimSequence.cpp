@@ -1,5 +1,11 @@
 #include "UEPyAnimSequence.h"
 
+#if WITH_EDITOR
+#include "AnimationModifiers/Private/AnimationModifiersAssetUserData.h"
+#include "Interfaces/Interface_AssetUserData.h"
+#include "AnimationModifier.h"
+#endif
+
 
 PyObject *py_ue_anim_get_skeleton(ue_PyUObject * self, PyObject * args)
 {
@@ -118,7 +124,6 @@ PyObject *py_ue_anim_sequence_update_compressed_track_map_from_raw(ue_PyUObject 
 	Py_RETURN_NONE;
 }
 
-
 PyObject *py_ue_anim_sequence_get_raw_animation_data(ue_PyUObject * self, PyObject * args)
 {
 	ue_py_check(self);
@@ -179,6 +184,53 @@ PyObject *py_ue_anim_add_key_to_sequence(ue_PyUObject * self, PyObject * args)
 
 	Py_RETURN_NONE;
 }
+
+PyObject *py_ue_anim_sequence_get_animation_modifiers_asset_user_data(ue_PyUObject * self, PyObject * args)
+{
+
+	ue_py_check(self);
+
+	/*UAnimSequence *anim = ue_py_check_type<UAnimSequence>(self);
+	if (!anim)
+		return PyErr_Format(PyExc_Exception, "UObject is not a UAnimSequence.");*/
+
+	UObject* object = self->ue_object;
+	if (!object->GetClass()->ImplementsInterface(UInterface_AssetUserData::StaticClass()))
+	{
+		return PyErr_Format(PyExc_Exception, "UObject does not implement IInterface_AssetUserData interface.");
+	}
+
+	IInterface_AssetUserData* data_iface = dynamic_cast<IInterface_AssetUserData*>(object);
+	if (!data_iface)
+	{
+		return PyErr_Format(PyExc_Exception, "Could not cast object to UInterface_AssetUserData.");
+	}
+
+	//GetAssetUserDataOfClass(T::StaticClass())
+	//UAnimationModifiersAssetUserData* asset_data = data_iface->GetAssetUserData<UAnimationModifiersAssetUserData>();
+	UAnimationModifiersAssetUserData* asset_data = Cast<UAnimationModifiersAssetUserData>( data_iface->GetAssetUserDataOfClass( UAnimationModifiersAssetUserData::StaticClass() ) );
+	if (!asset_data)
+	{
+		Py_RETURN_NONE;
+	}
+	
+	Py_RETURN_UOBJECT(asset_data);
+}
+
+//PyObject *py_ue_anim_sequence_set_animation_modifiers_asset_user_data(ue_PyUObject * self, PyObject * args)
+//{
+//
+//	ue_py_check(self);
+//
+//	UObject* Object = self->ue_object;
+//	//if (MyObject->GetClass()->ImplementsInterface(UMyInterface::StaticClass())) IMyInterface::Execute_MyFunction(MyObject, MyArg);
+//	if (!Object->GetClass()->ImplementsInterface(UInterface_AssetUserData::StaticClass()))
+//	{
+//		Py_RETURN_NONE;	
+//	}
+//	
+//	Py_RETURN_NONE;
+//}
 
 PyObject *py_ue_anim_sequence_apply_raw_anim_changes(ue_PyUObject * self, PyObject * args)
 {

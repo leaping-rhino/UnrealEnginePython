@@ -22,7 +22,8 @@ public class UnrealEnginePython : ModuleRules
         "C:/Program Files/Python36",
         "C:/Program Files/Python35",
         "C:/Python27",
-        "C:/IntelPython35"
+        "C:/IntelPython35",
+        "C:/Users/User/AppData/Local/Programs/Python/Python36",
     };
 
     private string[] macKnownPaths =
@@ -119,7 +120,8 @@ public class UnrealEnginePython : ModuleRules
             {
                 "Core",
                 "Sockets",
-                "Networking"
+                "Networking",
+                "AnimationModifiers",
 				// ... add other public dependencies that you statically link with here ...
 			}
             );
@@ -144,7 +146,8 @@ public class UnrealEnginePython : ModuleRules
                 "MovieSceneCapture",
                 "Landscape",
                 "Foliage",
-                "AIModule"
+                "AIModule",
+                "AnimationModifiers",
 				// ... add private dependencies that you statically link with here ...
 			}
             );
@@ -198,7 +201,8 @@ public class UnrealEnginePython : ModuleRules
                 "Persona",
                 "PropertyEditor",
                 "LandscapeEditor",
-                "MaterialEditor"
+                "MaterialEditor",
+                "AnimationModifiers",
             });
         }
 
